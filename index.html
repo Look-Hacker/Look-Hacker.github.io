@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Look-Hacker | Ultimate Hacking Simulator</title>
+    <style>
+        :root { --green: #00FF41; --dark: #0D0208; }
+        body { background-color: var(--dark); color: var(--green); font-family: 'Courier New', Courier, monospace; margin: 0; overflow-x: hidden; }
+        
+        /* Navigation Buttons */
+        .nav-bar { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; padding: 20px; background: #000; border-bottom: 2px solid var(--green); }
+        button { background: transparent; border: 1px solid var(--green); color: var(--green); padding: 10px 15px; cursor: pointer; text-transform: uppercase; font-weight: bold; }
+        button:hover { background: var(--green); color: #000; }
+
+        .view-container { position: relative; width: 100%; min-height: 80vh; display: none; padding: 20px; box-sizing: border-box; }
+        .active { display: block; }
+        .grid-view { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        /* 1. Rain Effect */
+        #canvas-rain { position: absolute; top:0; left:0; width: 100%; height: 100%; z-index: -1; }
+        .hacked-text { font-size: 5rem; text-align: center; margin-top: 100px; text-shadow: 0 0 10px var(--green); }
+
+        /* 2. Terminal */
+        #terminal { width: 90%; height: 400px; background: #000; border: 1px solid #333; padding: 10px; overflow-y: auto; outline: none; }
+
+        /* 3 & 4. Fade Blips */
+        .fade-box { font-size: 2rem; text-align: center; margin-top: 100px; animation: blip-fade 2s infinite; }
+        @keyframes blip-fade { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+        .warning-red { color: #ff0000; border: 2px solid #ff0000; padding: 20px; display: inline-block; }
+
+        /* 6. Hollywood Simulator */
+        .hollywood-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; height: 500px; }
+        .panel { border: 1px solid var(--green); font-size: 0.7rem; overflow: hidden; white-space: nowrap; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <button onclick="showView('v1')">1. Look Like Hacker</button>
+        <button onclick="showView('v2')">2. Type Like Coder</button>
+        <button onclick="showView('v3')">3. Ethical-Hacker</button>
+        <button onclick="showView('v4')">4. Black_Hat-Hacker</button>
+        <button onclick="showView('v5')">5. All In One</button>
+        <button onclick="showView('v6')">6. Hollywood</button>
+    </div>
+
+    <div id="v1" class="view-container">
+        <canvas id="canvas-rain"></canvas>
+        <h1 class="hacked-text">SYSTEM HACKED</h1>
+    </div>
+
+    <div id="v2" class="view-container">
+        <h3>SECURE TERMINAL v4.0 - TYPE ANYTHING</h3>
+        <div id="terminal" contenteditable="true">root@look-hacker:~$ </div>
+    </div>
+
+    <div id="v3" class="view-container">
+        <div class="fade-box">SYSTEM SCAN: <br> "You have solved bug of NASA"</div>
+    </div>
+
+    <div id="v4" class="view-container">
+        <div class="fade-box warning-red">ALERT: <br> "You have got the remote Access"</div>
+    </div>
+
+    <div id="v5" class="view-container">
+        <div class="grid-view" id="all-in-one-target"></div>
+    </div>
+
+    <div id="v6" class="view-container">
+        <div class="hollywood-grid" id="h-grid"></div>
+    </div>
+
+    <script>
+        function showView(id) {
+            document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active', 'grid-view'));
+            const target = document.getElementById(id);
+            target.classList.add('active');
+
+            if(id === 'v1') startRain();
+            if(id === 'v5') startAllInOne();
+            if(id === 'v6') startHollywood();
+        }
+
+        // --- Rain Logic ---
+        function startRain() {
+            const canvas = document.getElementById('canvas-rain');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const fontSize = 16;
+            const columns = canvas.width / fontSize;
+            const drops = Array(Math.floor(columns)).fill(1);
+
+            function draw() {
+                ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.fillStyle = "#0F0";
+                ctx.font = fontSize + "px arial";
+                drops.forEach((y, i) => {
+                    const text = letters[Math.floor(Math.random() * letters.length)];
+                    ctx.fillText(text, i * fontSize, y * fontSize);
+                    if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                    drops[i]++;
+                });
+            }
+            setInterval(draw, 33);
+        }
+
+        // --- Hollywood Logic ---
+        function startHollywood() {
+            const grid = document.getElementById('h-grid');
+            grid.innerHTML = '';
+            for(let i=0; i<9; i++) {
+                const p = document.createElement('div');
+                p.className = 'panel';
+                grid.appendChild(p);
+                setInterval(() => {
+                    p.innerHTML += Math.random().toString(36).substring(2, 15) + "<br>";
+                    p.scrollTop = p.scrollHeight;
+                }, 100);
+            }
+        }
+
+        // --- All in One ---
+        function startAllInOne() {
+            const target = document.getElementById('all-in-one-target');
+            target.parentElement.classList.add('grid-view');
+            target.innerHTML = `
+                <div style="border:1px solid green">Rain Effect Active</div>
+                <div style="border:1px solid green">Terminal Ready</div>
+                <div style="border:1px solid green" class="fade-box">NASA Bug Solved</div>
+                <div style="border:1px solid red" class="fade-box">Remote Access Gained</div>
+            `;
+        }
+    </script>
+</body>
+</html>
